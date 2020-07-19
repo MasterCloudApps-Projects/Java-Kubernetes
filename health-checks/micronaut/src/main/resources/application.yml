@@ -1,0 +1,10 @@
+micronaut:
+  application:
+    name: demo
+  endpoints:
+    health:
+      enabled: true
+      sensitive: false # non-secured endpoint
+      details-visible: ANONYMOUS # show details for everyone
+      url:
+        enabled: true
