@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: health-check
+  name: health-check
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: health-check
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: health-check
+    spec:
+      securityContext:
+         runAsUser: 1000300
+      containers:
+      - env:
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: password
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:postgresql://postgresdb:5432/postgres
+        - name: SPRING_DATASOURCE_USERNAME
+          value: postgres
+        image: javieraviles/health-check:spring-boot
+        name: health-check
+        securityContext:
+          allowPrivilegeEscalation: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: health-check
+  name: health-check
+spec:
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: health-check
+  type: LoadBalancer
