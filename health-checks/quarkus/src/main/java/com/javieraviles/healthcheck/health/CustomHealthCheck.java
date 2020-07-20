@@ -1,4 +1,4 @@
-package org.acme.health;
+package com.javieraviles.healthcheck.health;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -9,29 +9,29 @@ import org.eclipse.microprofile.health.Readiness;
 
 @Readiness
 @ApplicationScoped
-public class DatabaseConnectionHealthCheck implements HealthCheck {
+public class CustomHealthCheck implements HealthCheck {
 
-	private boolean isDatabaseUp = true;
+	private boolean isCustomServiceUp = true;
+	private String serviceName = "Custom-service";
 
 	@Override
 	public HealthCheckResponse call() {
 
-		HealthCheckResponseBuilder responseBuilder = HealthCheckResponse.named("Database connection health check");
+		HealthCheckResponseBuilder responseBuilder = HealthCheckResponse.named(serviceName);
 
 		try {
-			simulateDatabaseConnectionVerification();
+			simulateCustomServiceConnectionVerification();
 			responseBuilder.up();
 		} catch (IllegalStateException e) {
-			// cannot access the database
 			responseBuilder.down();
 		}
 
 		return responseBuilder.build();
 	}
 
-	private void simulateDatabaseConnectionVerification() {
-		if (!isDatabaseUp) {
-			throw new IllegalStateException("Cannot contact database");
+	private void simulateCustomServiceConnectionVerification() {
+		if (!isCustomServiceUp) {
+			throw new IllegalStateException("Cannot reach custom service");
 		}
 	}
 }
