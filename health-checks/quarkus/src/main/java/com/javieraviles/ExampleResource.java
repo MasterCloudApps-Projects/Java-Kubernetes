@@ -1,4 +1,4 @@
-package com.javieraviles.healthcheck;
+package com.javieraviles;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

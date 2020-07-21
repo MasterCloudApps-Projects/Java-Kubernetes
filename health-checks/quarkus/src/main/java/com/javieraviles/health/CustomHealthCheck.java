@@ -1,4 +1,4 @@
-package com.javieraviles.healthcheck.health;
+package com.javieraviles.health;
 
 import javax.enterprise.context.ApplicationScoped;
 

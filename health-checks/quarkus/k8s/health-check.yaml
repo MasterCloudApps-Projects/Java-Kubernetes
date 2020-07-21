@@ -2,19 +2,19 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: health-check
-  name: health-check
+    app: health-check-quarkus
+  name: health-check-quarkus
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: health-check
+      app: health-check-quarkus
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: health-check
+        app: health-check-quarkus
     spec:
       securityContext:
          runAsUser: 1000300
@@ -27,7 +27,8 @@ spec:
         - name: QUARKUS_DATASOURCE_USERNAME
           value: postgres
         image: javieraviles/health-check:quarkus
-        name: health-check
+        imagePullPolicy: Always
+        name: health-check-quarkus
         securityContext:
           allowPrivilegeEscalation: false
 ---
@@ -35,13 +36,13 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: health-check
-  name: health-check
+    app: health-check-quarkus
+  name: health-check-quarkus
 spec:
   ports:
   - protocol: TCP
     port: 8080
     targetPort: 8080
   selector:
-    app: health-check
+    app: health-check-quarkus
   type: LoadBalancer
