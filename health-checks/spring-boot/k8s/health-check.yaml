@@ -2,19 +2,19 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: health-check
-  name: health-check
+    app: health-check-springboot
+  name: health-check-springboot
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: health-check
+      app: health-check-springboot
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: health-check
+        app: health-check-springboot
     spec:
       securityContext:
          runAsUser: 1000300
@@ -27,7 +27,7 @@ spec:
         - name: SPRING_DATASOURCE_USERNAME
           value: postgres
         image: javieraviles/health-check:spring-boot
-        name: health-check
+        name: health-check-springboot
         securityContext:
           allowPrivilegeEscalation: false
 ---
@@ -35,13 +35,13 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: health-check
-  name: health-check
+    app: health-check-springboot
+  name: health-check-springboot
 spec:
   ports:
   - protocol: TCP
     port: 8080
     targetPort: 8080
   selector:
-    app: health-check
+    app: health-check-springboot
   type: LoadBalancer
