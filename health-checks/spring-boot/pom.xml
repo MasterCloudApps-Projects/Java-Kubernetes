@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.javieraviles</groupId>
-	<artifactId>health-check</artifactId>
+	<artifactId>healthcheck</artifactId>
 	<version>1.0.0</version>
 	<name>health-check</name>
 	<description>Spring Boot health check example</description>

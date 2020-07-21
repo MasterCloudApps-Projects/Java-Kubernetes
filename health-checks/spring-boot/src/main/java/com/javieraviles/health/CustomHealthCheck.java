@@ -1,4 +1,4 @@
-package com.javieraviles.healthcheck.health;
+package com.javieraviles.health;
 
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
