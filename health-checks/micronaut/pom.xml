@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.example</groupId>
-  <artifactId>demo</artifactId>
+  <groupId>com.javieraviles</groupId>
+  <artifactId>healthcheck</artifactId>
   <version>0.1</version>
 
   <parent>
@@ -19,7 +19,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <micronaut.version>2.0.0</micronaut.version>
-    <exec.mainClass>com.example.Application</exec.mainClass>
+    <micronaut.data.version>1.1.1</micronaut.data.version>
+    <exec.mainClass>com.javieraviles.Application</exec.mainClass>
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
   </properties>
@@ -31,6 +32,17 @@
     </repository>
   </repositories>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-bom</artifactId>
+        <version>1.14.3</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -69,8 +81,23 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
+      <groupId>io.micronaut.sql</groupId>
+      <artifactId>micronaut-jdbc-hikari</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.micronaut.data</groupId>
+      <artifactId>micronaut-data-hibernate-jpa</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -86,6 +113,11 @@
     <dependency>
       <groupId>io.micronaut.test</groupId>
       <artifactId>micronaut-test-junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>postgresql</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -141,10 +173,15 @@
               <artifactId>micronaut-validation</artifactId>
               <version>${micronaut.version}</version>
             </path>
+            <path>
+              <groupId>io.micronaut.data</groupId>
+              <artifactId>micronaut-data-processor</artifactId>
+              <version>${micronaut.data.version}</version>
+            </path>
           </annotationProcessorPaths>
           <compilerArgs>
-            <arg>-Amicronaut.processing.group=com.example</arg>
-            <arg>-Amicronaut.processing.module=demo</arg>
+            <arg>-Amicronaut.processing.group=com.javieraviles</arg>
+            <arg>-Amicronaut.processing.module=healthcheck</arg>
           </compilerArgs>
         </configuration>
         <executions>
@@ -164,6 +201,11 @@
                   <groupId>io.micronaut</groupId>
                   <artifactId>micronaut-validation</artifactId>
                   <version>${micronaut.version}</version>
+                </path>
+                <path>
+                  <groupId>io.micronaut.data</groupId>
+                  <artifactId>micronaut-data-processor</artifactId>
+                  <version>${micronaut.data.version}</version>
                 </path>
               </annotationProcessorPaths>
             </configuration>

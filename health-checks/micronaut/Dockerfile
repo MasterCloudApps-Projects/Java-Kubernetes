@@ -1,4 +1,5 @@
 FROM openjdk:14-alpine
-COPY target/demo-*.jar demo.jar
+COPY target/healthcheck-*.jar healthcheck.jar
 EXPOSE 8080
-CMD ["java", "-Dcom.sun.management.jmxremote", "-Xmx128m", "-jar", "demo.jar"]
+USER 1000300
+CMD ["java", "-Dcom.sun.management.jmxremote", "-Xmx128m", "-jar", "healthcheck.jar"]

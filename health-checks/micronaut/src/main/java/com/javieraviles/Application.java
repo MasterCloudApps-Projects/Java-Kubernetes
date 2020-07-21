@@ -1,4 +1,4 @@
-package com.example;
+package com.javieraviles;
 
 import io.micronaut.runtime.Micronaut;
 

@@ -1,10 +1,17 @@
 micronaut:
   application:
-    name: demo
-  endpoints:
+    name: healthcheck
+datasources:
+  default:
+    url: ${JDBC_URL:`jdbc:postgresql://192.168.99.111:5432/postgres`}
+    driverClassName: org.postgresql.Driver
+    username: ${JDBC_USER:postgres}
+    password: ${JDBC_PASSWORD:password}
+    schema-generate: CREATE_DROP
+    dialect: POSTGRES
+jpa.default.properties.hibernate.hbm2ddl.auto: update
+endpoints:
     health:
-      enabled: true
-      sensitive: false # non-secured endpoint
-      details-visible: ANONYMOUS # show details for everyone
-      url:
         enabled: true
+        sensitive: false
+        details-visible: ANONYMOUS 

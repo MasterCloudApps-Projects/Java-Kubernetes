@@ -1,5 +1,5 @@
 applicationType: default
-defaultPackage: com.example
+defaultPackage: com.javieraviles
 testFramework: junit
 sourceLanguage: java
 buildTool: maven

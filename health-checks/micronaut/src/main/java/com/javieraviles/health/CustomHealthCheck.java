@@ -1,4 +1,4 @@
-package com.example.health;
+package com.javieraviles.health;
 
 import javax.inject.Singleton;
 
@@ -10,29 +10,29 @@ import io.micronaut.management.health.indicator.HealthIndicator;
 import io.micronaut.management.health.indicator.HealthResult;
 
 @Singleton
-public class DatabaseConnectionHealthCheck implements HealthIndicator {
+public class CustomHealthCheck implements HealthIndicator {
 
-	private boolean isDatabaseUp = true;
+	private boolean isCustomServiceUp = true;
+	private String serviceName = "Custom-service";
 
 	@Override
 	public Publisher<HealthResult> getResult() {
 
-		HealthResult.Builder builder = HealthResult.builder("Database connection health check");
+		HealthResult.Builder builder = HealthResult.builder(serviceName);
 
 		try {
-			simulateDatabaseConnectionVerification();
+			simulateCustomServiceConnectionVerification();
 			builder.status(HealthStatus.UP);
 		} catch (IllegalStateException e) {
-			// cannot access the database
 			builder.status(HealthStatus.DOWN);
 		}
 
 		return Publishers.just(builder.build());
 	}
 
-	private void simulateDatabaseConnectionVerification() {
-		if (!isDatabaseUp) {
-			throw new IllegalStateException("Cannot contact database");
+	private void simulateCustomServiceConnectionVerification() {
+		if (!isCustomServiceUp) {
+			throw new IllegalStateException("Cannot reach custom service");
 		}
 	}
 
