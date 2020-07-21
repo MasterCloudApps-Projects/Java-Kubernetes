@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: health-check-micronaut
+  name: health-check-micronaut
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: health-check-micronaut
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: health-check-micronaut
+    spec:
+      securityContext:
+         runAsUser: 1000300
+      containers:
+      - env:
+        - name: JDBC_PASSWORD
+          value: password
+        - name: JDBC_URL
+          value: jdbc:postgresql://postgresdb:5432/postgres
+        - name: JDBC_USER
+          value: postgres
+        image: javieraviles/health-check:micronaut
+        imagePullPolicy: Always
+        name: health-check-micronaut
+        securityContext:
+          allowPrivilegeEscalation: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: health-check-micronaut
+  name: health-check-micronaut
+spec:
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: health-check-micronaut
+  type: LoadBalancer
