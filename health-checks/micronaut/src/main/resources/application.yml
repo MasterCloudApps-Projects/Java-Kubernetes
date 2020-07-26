@@ -12,6 +12,10 @@ datasources:
 jpa.default.properties.hibernate.hbm2ddl.auto: update
 endpoints:
     health:
-        enabled: true
-        sensitive: false
-        details-visible: ANONYMOUS 
+      enabled: true
+      sensitive: false
+      details-visible: ANONYMOUS 
+    info:
+      enabled: true
+      sensitive: false
+      details-visible: ANONYMOUS 
