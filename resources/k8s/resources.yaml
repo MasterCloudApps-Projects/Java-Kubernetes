@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: resources
+  name: resources
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: resources
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: resources
+    spec:
+      securityContext:
+         runAsUser: 1000300
+      containers:
+      - env:
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: password
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:postgresql://postgresdb:5432/postgres
+        - name: SPRING_DATASOURCE_USERNAME
+          value: postgres
+        image: javieraviles/health-check:spring-boot
+        name: resources
+        securityContext:
+          allowPrivilegeEscalation: false
+        resources:
+          requests:
+            memory: 160Mi
+            cpu: 5m
+          limits:
+            memory: 450Mi
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: resources
+  name: resources
+spec:
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: resources
+  type: LoadBalancer
