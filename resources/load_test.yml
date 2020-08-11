@@ -1,0 +1,20 @@
+config:
+    target: "http://192.168.99.132:30270/"
+    phases:
+      # during 100 seconds, increase 1 user per second
+      - duration: 1000
+        arrivalRate: 100
+    http:
+      # if timeout > 5 seconds, stop and fail
+      timeout: 5
+scenarios:
+    - name: "Getting the health readiness probe" 
+      weight: 8
+      flow:
+        - get: 
+            url: "/actuator/health/readiness"
+    - name: "Getting the health liveness probe" 
+      weight: 2
+      flow:
+        - get: 
+            url: "/actuator/health/liveness"
