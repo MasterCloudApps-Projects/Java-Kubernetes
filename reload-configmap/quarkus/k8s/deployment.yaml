@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: reload-configmap-quarkus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reload-configmap-quarkus
+  template:
+    metadata:
+      labels:
+        app: reload-configmap-quarkus
+    spec:
+      securityContext:
+         runAsUser: 1000300
+      containers:
+      - image: reload-configmap:quarkus
+        imagePullPolicy: Never
+        name: reload-configmap-quarkus
+        ports:
+            - containerPort: 8080
+        securityContext:
+          allowPrivilegeEscalation: false
+        env:
+          - name: KUBERNETES_NAMESPACE
+            value: default
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reload-configmap-quarkus
+spec:
+  ports:
+  - protocol: TCP
+    port: 8080
+    nodePort: 30124
+  selector:
+    app: reload-configmap-quarkus
+  type: NodePort

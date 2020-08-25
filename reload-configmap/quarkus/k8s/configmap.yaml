@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: reload-configmap
+data:
+  properties.fubar.bar: bar1
+  properties.fubar.foo: foo1
