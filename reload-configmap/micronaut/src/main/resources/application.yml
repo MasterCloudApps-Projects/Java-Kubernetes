@@ -1,0 +1,7 @@
+micronaut:
+  application:
+    name: reload-configmap
+properties:
+  fubar:
+    foo: 'foo'
+    bar: 'bar'
