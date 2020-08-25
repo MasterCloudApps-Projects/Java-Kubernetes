@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: reload-configmap
+data:
+  application.yml: |-
+    properties:
+      fubar:
+        bar: bar1
+        foo: foo1

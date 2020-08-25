@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: reload-configmap-micronaut
+  name: reload-configmap-micronaut
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reload-configmap-micronaut
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: reload-configmap-micronaut
+    spec:
+      securityContext:
+         runAsUser: 1000300
+      containers:
+      - image: reload-configmap:micronaut
+        imagePullPolicy: Never
+        name: reload-configmap-micronaut
+        securityContext:
+          allowPrivilegeEscalation: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: reload-configmap-micronaut
+  name: reload-configmap-micronaut
+spec:
+  ports:
+  - protocol: TCP
+    port: 8080
+    nodePort: 30125
+  selector:
+    app: reload-configmap-micronaut
+  type: LoadBalancer
