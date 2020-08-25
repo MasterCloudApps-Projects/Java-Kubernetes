@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reload-configmap
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+      matchLabels:
+        app: reload-configmap
+  template:
+    metadata:
+      labels:
+        app: reload-configmap
+    spec:
+      securityContext:
+         runAsUser: 1000300
+      containers:
+        - name: reload-configmap
+          image: reload-configmap:springboot
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          securityContext:
+            allowPrivilegeEscalation: false
+          env:
+            - name: env.namespace
+              value: default
+          volumeMounts:
+            - name: config
+              mountPath: /config
+      volumes:
+        - name: config
+          configMap:
+            name: reload-configmap
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: reload-configmap
+spec:
+  selector:
+    app: reload-configmap
+  ports:
+    - protocol: TCP
+      port: 8080
+      nodePort: 30123
+  type: NodePort
+
