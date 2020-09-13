@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: scraping-springboot
+  name: scraping-springboot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scraping-springboot
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: scraping-springboot
+    spec:
+      securityContext:
+         runAsUser: 1000300
+      containers:
+      - image: scraping:spring-boot
+        name: scraping-springboot
+        ports:
+        - name: web
+          containerPort: 8080
+        imagePullPolicy: Never
+        securityContext:
+          allowPrivilegeEscalation: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scraping-springboot
+  labels:
+    app: scraping-springboot
+    k8s-app: scraping-springboot
+spec:
+  selector:
+    app: scraping-springboot
+  ports:
+    - name: web
+      port: 8080
+      protocol: TCP
+      targetPort: web
