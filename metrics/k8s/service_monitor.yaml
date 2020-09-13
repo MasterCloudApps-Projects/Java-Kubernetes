@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: scraping-springboot
+  labels:
+    release: metrics
+spec:
+  selector:
+    matchLabels:
+      app: scraping-springboot
+  endpoints:
+  - port: web
+    path: '/actuator/prometheus'
+    interval: 10s
+    honorLabels: true
