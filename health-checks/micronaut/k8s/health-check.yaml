@@ -26,8 +26,8 @@ spec:
           value: jdbc:postgresql://postgresdb:5432/postgres
         - name: JDBC_USER
           value: postgres
-        image: javieraviles/health-check:micronaut
-        imagePullPolicy: Always
+        image: health-check:micronaut
+        imagePullPolicy: Never
         name: health-check-micronaut
         securityContext:
           allowPrivilegeEscalation: false
@@ -54,7 +54,7 @@ spec:
   ports:
   - protocol: TCP
     port: 8080
-    targetPort: 8080
+    nodePort: 30799
   selector:
     app: health-check-micronaut
-  type: LoadBalancer
+  type: NodePort

@@ -26,8 +26,8 @@ spec:
           value: jdbc:postgresql://postgresdb:5432/postgres
         - name: QUARKUS_DATASOURCE_USERNAME
           value: postgres
-        image: javieraviles/health-check:quarkus
-        imagePullPolicy: Always
+        image: health-check:quarkus
+        imagePullPolicy: Never
         name: health-check-quarkus
         securityContext:
           allowPrivilegeEscalation: false
@@ -54,7 +54,7 @@ spec:
   ports:
   - protocol: TCP
     port: 8080
-    targetPort: 8080
+    nodePort: 30799
   selector:
     app: health-check-quarkus
-  type: LoadBalancer
+  type: NodePort
