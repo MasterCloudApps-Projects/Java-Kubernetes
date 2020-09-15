@@ -250,6 +250,15 @@ Y un `Service Unavailable` cuando alguno de los dos no funcione, por ejemplo cam
 }
 ```
 
+
+Si por el contrario fuese la base de datos la que fallase, se puede borrar y generar el mismo escenario:
+
+```
+$ cd /k8s && kubectl delete –f ./postgresdb.yaml
+```
+
+En cuanto la base de datos esté de nuevo disponible, el serivicio volverá a recibir tráfico con normalidad.
+
 ## Micronaut
 ### Generar el proyecto 
 En segundo lugar se va a analizar qué ofrece **Micronaut** (actualmente en su versión 2.0) para facilitar la implementación de los health check. De manera similar al caso anterior, en su web https://micronaut.io/launch/ se puede crear un boilerplate donde se seleccionarán los **features** que se quieren añadir al proyecto de base. Tras leer un poco su documentación, se necesitarán los features **management** (añadirá el soporte para monitorear la aplicación mediante endpoints), **data-jpa** (para configurar el datasource) y **postgres** (DB drivers):
@@ -444,6 +453,14 @@ Ahora el endpoint **http://192.168.99.132:31270/health** tendrá en cuenta tanto
 }
 ```
 
+De igual forma que en el caso anterior, si se cambia el valor del booleano `isCustomServiceUp` a false o se borra la base de datos, se generaría un escenario de fallo de la readiness probe:
+
+```
+$ cd /k8s && kubectl delete –f ./postgresdb.yaml
+```
+
+En cuanto la base de datos esté de nuevo disponible, el serivicio volverá a recibir tráfico con normalidad.
+
 ## Spring Boot
 ### Generar el proyecto 
 Por último, **Spring Boot** (en su versión 2.3.1) también ofrece una solución completa mediante el módulo Actuator. Podemos encontrarlo en su documentación oficial como Kubernetes Probes.
@@ -637,12 +654,13 @@ Ahora el endpoint **http://192.168.99.132:30033/health** tendrá en cuenta tanto
 }
 ```
 
-Una forma de comprobar que todos los readiness probes están funcionando correctamente, es eliminando el pod de postgres:
+Y de nuevo una forma de comprobar que todos los readiness probes están funcionando correctamente, es eliminando el pod de postgres:
 
-´´´
+```
 $ cd /k8s && kubectl delete –f ./postgresdb.yaml
-´´´ 
+```
 
-Se podrá observar que los tres services (quarkus, micronaut y spring-boot) responderán con un `503`, ya que cada uno de sus respectivos pods, aunque se puedan seguir visualizando como pods “vivos” en el dashboard de minikube, están fallando los readiness probes y por tanto, k8s no les dirigirá tráfico y el servicio responderá con 503 service unavailable.
+Se podrá observar que los tres services (quarkus, micronaut y spring-boot) responderán con un `503`, ya que cada uno de sus respectivos pods, aunque se puedan seguir visualizando como pods “vivos” en el dashboard de minikube, están fallando los readiness probes y por tanto, k8s no les dirigirá tráfico y el servicio responderá con 503 service unavailable. En el instante en el que la base de datos vuelva a estar disponible, todos los pods funcionarán con normalidad.
+
 
 Todo el código se encuentra disponible en el repositorio https://github.com/MasterCloudApps-Projects/Java-Kubernetes/tree/master/health-checks
