@@ -1,6 +1,23 @@
 # Análisis health checks en diferentes frameworks java
 A continuación, se va a proceder a analizar qué nos ofrecen actualmente los diferentes frameworks de java orientados a microservicios y cloud para facilitar la implementación de health checks en kubernetes.
 
+  - [Requisitos](#requisitos)
+  - [En qué consiste el análisis](#en-qué-consiste-el-análisis)
+  - [Quarkus](#quarkus)
+    - [Generar el proyecto](#generar-el-proyecto)
+    - [Añadir recursos de kubernetes](#añadir-recursos-de-kubernetes)
+    - [Desplegar y analizar respuesta del endpoint /health](#desplegar-y-analizar-respuesta-del-endpoint-health)
+    - [Implementar health check customizado](#implementar-health-check-customizado)
+  - [Micronaut](#micronaut)
+    - [Generar el proyecto](#generar-el-proyecto-1)
+    - [Desplegar y analizar respuesta del endpoint /health](#desplegar-y-analizar-respuesta-del-endpoint-health-1)
+    - [Implementar health check customizado](#implementar-health-check-customizado-1)
+  - [Spring Boot](#spring-boot)
+    - [Generar el proyecto](#generar-el-proyecto-2)
+    - [Desplegar y analizar respuesta del endpoint /health](#desplegar-y-analizar-respuesta-del-endpoint-health-2)
+    - [Implementar health check customizado](#implementar-health-check-customizado-2)
+  - [Comparativa](#comparativa)
+
 ## Requisitos
     - Conocimientos básicos de kubernetes
     - Maven
@@ -112,13 +129,13 @@ spec:
           allowPrivilegeEscalation: false
         livenessProbe:
           httpGet:
-            path: /actuator/health/live
+            path: /health/live
             port: 8080
           initialDelaySeconds: 10
           periodSeconds: 3
         readinessProbe:
           httpGet:
-            path: /actuator/health/ready
+            path: /health/ready
             port: 8080
           initialDelaySeconds: 10
           periodSeconds: 3
@@ -357,7 +374,7 @@ Ya se puede observar en el dashboard de minikube como hay un pod de Micronaut fu
 ![Screenshot Micronaut deployed in minikube](https://raw.githubusercontent.com/MasterCloudApps-Projects/Java-Kubernetes/master/health-checks/assets/minikube-dashboard-micronaut.png "Screenshot Micronaut deployed in minikube")
  
 
-Al ser el servicio de tipo **NodePort**, utilizando el puerto TCP al que se ha indicado que mapee el puerto 8080 hacia el exterior, el 31270, se podrá acceder al servicio de Micronaut directamente. Esta vez solo estará disponible un único endpoint **http://192.168.99.132:31270/health** que comprueba la conexión a base de datos tal y como describen en su documentación:
+Al ser el servicio de tipo **NodePort**, utilizando el puerto TCP al que se ha indicado que mapee el puerto 8080 hacia el exterior, el 31270, se podrá acceder al servicio de Micronaut directamente. Esta vez solo estará disponible un único endpoint (que se utilizará como readiness probe) **http://192.168.99.132:31270/health** que comprueba la conexión a base de datos tal y como describen en su documentación:
 
 > “If we would have one or more DataSource beans for database access in our application context a health indicator is added as well to show if the database(s) are available or not.”
 
@@ -388,6 +405,8 @@ Con una respuesta en formato `JSON`:
 ```
 
 Estado `UP`, sano, y simplemente con un check adicional ya que existe un datasource configurado. Si fallase la conexión a base de datos, la respuesta sería `HTTP 503 SERVICE UNAVAILABLE` con status `DOWN`.
+
+Como liveness probe se puede utilizar el endpoint `/info`.
 
 ### Implementar health check customizado
 Como en el caso anterior, además de comprobar la conexión a base de datos, los health checks involucran la comprobación del estado de algún servicio de negocio. Siguiendo la documentación oficial de **Micronaut**, nos indica que se debe hacer un override del método `getResult()` de la clase [HealthIndicator](https://docs.micronaut.io/latest/api/io/micronaut/management/health/indicator/HealthIndicator.html) en una clase (`src/main/java/com/javieraviles/health/CustomHealthCheck.java`):
@@ -589,6 +608,8 @@ Con una respuesta en formato `JSON`:
 }
 ```
 
+Pudiendo acceder a cada probe por separado `/actuator/health/liveness` (sin check a DB) y `/actuator/health/readiness` (con check a DB).
+
 ### Implementar health check customizado
 Si adicionalmente se implementa el custom check como en los ejemplos anteriores, siguiendo la documentación oficial de Springboot, nos indica que se debe hacer un override del método `health()` de la interfaz [HealthIndicator](https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/actuate/health/HealthIndicator.html) de la siguiente forma:
 
@@ -662,5 +683,12 @@ $ cd /k8s && kubectl delete –f ./postgresdb.yaml
 
 Se podrá observar que los tres services (quarkus, micronaut y spring-boot) responderán con un `503`, ya que cada uno de sus respectivos pods, aunque se puedan seguir visualizando como pods “vivos” en el dashboard de minikube, están fallando los readiness probes y por tanto, k8s no les dirigirá tráfico y el servicio responderá con 503 service unavailable. En el instante en el que la base de datos vuelva a estar disponible, todos los pods funcionarán con normalidad.
 
+## Comparativa
+
+ ![Endpoints overview](https://raw.githubusercontent.com/MasterCloudApps-Projects/Java-Kubernetes/master/health-checks/assets/overview.png "Endpoints overview")
+
 
 Todo el código se encuentra disponible en el repositorio https://github.com/MasterCloudApps-Projects/Java-Kubernetes/tree/master/health-checks
+
+
+
