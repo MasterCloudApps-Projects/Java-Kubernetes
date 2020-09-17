@@ -26,7 +26,8 @@ spec:
           value: jdbc:postgresql://postgresdb:5432/postgres
         - name: SPRING_DATASOURCE_USERNAME
           value: postgres
-        image: javieraviles/health-check:spring-boot
+        image: health-check:spring-boot
+        imagePullPolicy: Never
         name: resources
         securityContext:
           allowPrivilegeEscalation: false
@@ -59,7 +60,7 @@ spec:
   ports:
   - protocol: TCP
     port: 8080
-    targetPort: 8080
+    nodePort: 30270
   selector:
     app: resources
-  type: LoadBalancer
+  type: NodePort
