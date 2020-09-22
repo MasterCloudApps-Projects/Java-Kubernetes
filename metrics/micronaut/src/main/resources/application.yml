@@ -1,0 +1,13 @@
+endpoints:
+  prometheus:
+    sensitive: false
+micronaut:
+  application:
+    name: metrics
+  metrics:
+    enabled: true
+    export:
+      prometheus:
+        enabled: true
+        descriptions: true
+        step: PT1M
