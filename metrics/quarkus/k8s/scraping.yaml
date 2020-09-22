@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: scraping-quarkus
+  name: scraping-quarkus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scraping-quarkus
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: scraping-quarkus
+    spec:
+      securityContext:
+         runAsUser: 1000300
+      containers:
+      - image: scraping:quarkus
+        name: scraping-quarkus
+        ports:
+        - name: web
+          containerPort: 8080
+        imagePullPolicy: Never
+        securityContext:
+          allowPrivilegeEscalation: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scraping-quarkus
+  labels:
+    app: scraping-quarkus
+    k8s-app: scraping-quarkus
+spec:
+  selector:
+    app: scraping-quarkus
+  ports:
+    - name: web
+      port: 8080
+      protocol: TCP
+      targetPort: web

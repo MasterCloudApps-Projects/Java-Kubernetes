@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: scraping-quarkus
+  labels:
+    release: metrics
+spec:
+  selector:
+    matchLabels:
+      app: scraping-quarkus
+  endpoints:
+  - port: web
+    path: '/metrics'
+    interval: 10s
+    honorLabels: true
