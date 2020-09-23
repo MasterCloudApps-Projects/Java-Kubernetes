@@ -1,6 +1,26 @@
 # Monitorización y visualización de logs de una aplicación java en kubernetes
 A continuación, se va a proceder a analizar qué nos ofrecen actualmente los diferentes frameworks de java orientados a microservicios y cloud para facilitar la exposición de métricas a un operador prometheus tanto de la JVM como customizadas.
 
+  - [Requisitos](#requisitos)
+  - [En qué consiste el análisis](#en-qué-consiste-el-análisis)
+  - [Motivación a la hora de elegir el stack de monitorización y visualización de logs](#motivación-a-la-hora-de-elegir-el-stack-de-monitorización-y-visualización-de-logs)
+  - [Preparar stack de monitorización y visualización de logs](#preparar-stack-de-monitorización-y-visualización-de-logs)
+  - [Spring Boot](#spring-boot)
+    - [Generar el proyecto](#generar-el-proyecto)
+    - [Implementar métricas customizadas](#implementar-métricas-customizadas)
+    - [Crear recursos para kubernetes](#crear-recursos-para-kubernetes)
+    - [Configurar un dashboard en Grafana mostrando métricas de la JVM y customizadas](#configurar-un-dashboard-en-grafana-mostrando-métricas-de-la-jvm-y-customizadas)
+  - [Quarkus](#quarkus)
+    - [Generar el proyecto](#generar-el-proyecto-1)
+    - [Implementar métricas customizadas](#implementar-métricas-customizadas-1)
+    - [Crear recursos para kubernetes](#crear-recursos-para-kubernetes-1)
+    - [Configurar un dashboard en Grafana mostrando métricas de la JVM y customizadas](#configurar-un-dashboard-en-grafana-mostrando-métricas-de-la-jvm-y-customizadas-1)
+  - [Micronaut](#micronaut)
+    - [Generar el proyecto](#generar-el-proyecto-2)
+    - [Implementar métricas customizadas](#implementar-métricas-customizadas-2)
+    - [Crear recursos para kubernetes](#crear-recursos-para-kubernetes-2)
+    - [Configurar un dashboard en Grafana mostrando métricas de la JVM y customizadas](#configurar-un-dashboard-en-grafana-mostrando-métricas-de-la-jvm-y-customizadas-2)
+
 ## Requisitos
     - Conocimientos básicos de kubernetes
     - Maven
